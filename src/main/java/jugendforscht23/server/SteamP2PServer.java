@@ -36,7 +36,7 @@ public class SteamP2PServer {
 						}
 					}
 				);
-				PingHandler.init(ch);
+				PingHandler.init(ch.pipeline());
 				while(client.getState() != ConnectionState.ClosedByPeer) {
 					byte[] packet = client.receive();
 					if(packet != null) ch.writeOneInbound(Unpooled.wrappedBuffer(packet));

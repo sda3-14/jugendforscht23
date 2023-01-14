@@ -31,7 +31,7 @@ public class SteamP2PClient {
 				}
 			}
 		);
-		Benchmark.init(ch);
+		Benchmark.init(ch.pipeline());
 		ch.pipeline().fireChannelActive();
 		while(client.getState() != ConnectionState.ClosedByPeer) {
 			byte[] packet = client.receive();

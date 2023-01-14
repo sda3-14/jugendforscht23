@@ -15,7 +15,7 @@ public class TCPClient {
 			.channel(NioSocketChannel.class)
 			.handler(new ChannelInitializer<NioSocketChannel>() {
 				protected void initChannel(NioSocketChannel ch) throws Exception {
-					Benchmark.init(ch);
+					Benchmark.init(ch.pipeline());
 				}
 			});
 		NioSocketChannel ch = (NioSocketChannel) bootstrap.connect(Global.ADDR, Global.PORT).syncUninterruptibly().channel();

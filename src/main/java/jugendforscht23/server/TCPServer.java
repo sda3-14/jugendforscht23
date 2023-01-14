@@ -16,7 +16,7 @@ public class TCPServer {
 			.channel(NioServerSocketChannel.class)
 			.childHandler(new ChannelInitializer<NioSocketChannel>() {
 				protected void initChannel(NioSocketChannel ch) throws Exception {
-					PingHandler.init(ch);
+					PingHandler.init(ch.pipeline());
 				}
 			});
 		NioServerSocketChannel ch = (NioServerSocketChannel) bootstrap.bind(Global.ADDR, Global.PORT).syncUninterruptibly().channel();
