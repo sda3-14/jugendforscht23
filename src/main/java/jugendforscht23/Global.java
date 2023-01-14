@@ -9,7 +9,7 @@ public class Global {
 	static {
 		Inet4Address a = null;
 		try {
-			a = (Inet4Address) InetAddress.getByName("192.168.178.161");
+			a = (Inet4Address) InetAddress.getByName("192.168.178.178");
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
