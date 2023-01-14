@@ -40,7 +40,6 @@ public class UnetClient {
 		});
 		Benchmark.init(ch.pipeline());
 		ch.pipeline().fireChannelActive();
-		while (!conn.isDead())
-			driver.tick();
+		while (!conn.isDead()) driver.tick();
 	}
 }
