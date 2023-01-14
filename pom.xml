@@ -36,9 +36,9 @@
 			<version>4.1.85.Final</version>
 		</dependency>
 		<dependency>
-			<groupId>de.yeetusdesastroesus</groupId>
-			<artifactId>gamenetworkingsockets</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>5.12.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>
