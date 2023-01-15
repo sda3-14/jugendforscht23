@@ -1,5 +1,6 @@
 package jugendforscht23.client;
 
+import io.jpower.kcp.netty.ChannelOptionHelper;
 import io.jpower.kcp.netty.UkcpChannel;
 import io.jpower.kcp.netty.UkcpClientChannel;
 import io.netty.bootstrap.Bootstrap;
@@ -20,6 +21,7 @@ public class KCPClient {
 					Benchmark.init(ch.pipeline());
 				}
 			});
+		bootstrap = ChannelOptionHelper.nodelay(bootstrap, true, 20, 2, true);
 		Channel ch = bootstrap.connect(Global.ADDR, Global.PORT).syncUninterruptibly().channel();
 		ch.closeFuture().syncUninterruptibly();
 		worker.shutdownGracefully();
