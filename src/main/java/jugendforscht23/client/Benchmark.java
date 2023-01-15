@@ -1,5 +1,7 @@
 package jugendforscht23.client;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +17,8 @@ import io.netty.handler.logging.LoggingHandler;
 public class Benchmark {
 	private static final Logger LOG = LoggerFactory.getLogger(Benchmark.class);
 
-	public static void init(ChannelPipeline pipeline) {
+	public static ReentrantLock init(ChannelPipeline pipeline) {
+		ReentrantLock lock = new ReentrantLock();
 		pipeline.addLast(
 			new ProtobufVarint32FrameDecoder(),
 			new ProtobufVarint32LengthFieldPrepender(),
@@ -27,10 +30,12 @@ public class Benchmark {
 						public void run() {
 							try {
 								while(true) {
+									lock.lock();
 									long t = System.nanoTime();
 									ByteBuf b = ctx.alloc().buffer();
 									b.writeLong(t);
 									ctx.writeAndFlush(b);
+									lock.unlock();
 									Thread.sleep(10);
 								}
 							} catch (InterruptedException e) {
@@ -48,5 +53,6 @@ public class Benchmark {
 				}
 			}
 		);
+		return lock;
 	}
 }

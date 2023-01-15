@@ -3,6 +3,7 @@ package jugendforscht23.client;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import de.yeetus.ue4.net.IpNetDriver;
 import de.yeetus.ue4.net.NetChType;
@@ -17,7 +18,7 @@ import io.netty.handler.codec.MessageToMessageCodec;
 import jugendforscht23.Global;
 
 public class UnetClient {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		IpNetDriver driver = new IpNetDriver(false, conn -> {
 			return new NetHandler(conn) {
 				protected boolean acceptNewChannel(NetChannel ch) {
@@ -38,8 +39,13 @@ public class UnetClient {
 				out.add(msg.buf.retain());
 			}
 		});
-		Benchmark.init(ch.pipeline());
+		ReentrantLock lock = Benchmark.init(ch.pipeline());
 		ch.pipeline().fireChannelActive();
-		while (!conn.isDead()) driver.tick();
+		while(!conn.isDead()) {
+			lock.lock();
+			driver.tick();
+			lock.unlock();
+			Thread.sleep(1);
+		}
 	}
 }

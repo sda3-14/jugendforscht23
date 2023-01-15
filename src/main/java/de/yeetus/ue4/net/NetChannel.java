@@ -192,6 +192,7 @@ public class NetChannel {
 			receivedNextBunch(bunch);
 			while(!inWaiting.isEmpty()) {
 				if(inWaiting.get(0).seqNum == connection.inReliable[index]+1) receivedNextBunch(inWaiting.remove(0));
+				else break;
 			}
 		}
 	}

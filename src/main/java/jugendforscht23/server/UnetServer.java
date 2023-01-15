@@ -15,7 +15,7 @@ import io.netty.handler.codec.MessageToMessageCodec;
 import jugendforscht23.Global;
 
 public class UnetServer {
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		IpNetDriver driver = new IpNetDriver(true, conn -> {
 			return new NetHandler(conn) {
 				protected boolean acceptNewChannel(NetChannel ch) {
@@ -35,6 +35,9 @@ public class UnetServer {
 			};
 		});
 		driver.bind(new InetSocketAddress(Global.ADDR, Global.PORT));
-		while(true) driver.tick();
+		while(true) {
+			driver.tick();
+			Thread.sleep(1);
+		}
 	}
 }
