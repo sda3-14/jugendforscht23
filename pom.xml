@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20150729</version>
+			<version>20150829</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
