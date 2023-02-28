@@ -1,18 +1,7 @@
 package de.yeetus.ue4.net;
 
 import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
-import java.util.stream.Collectors;
-
-import com.google.common.collect.Iterables;
 
 import de.yeetus.ue4.serialization.Archive;
 import io.netty.buffer.ByteBufAllocator;

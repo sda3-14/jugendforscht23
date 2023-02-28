@@ -17,7 +17,7 @@ import jugendforscht23.Global;
 
 public class SteamP2PServer {
 	public static void main(String[] args) throws UnknownHostException {
-		SteamListenSocket server = SteamNetworkingSockets.SERVER_INSTANCE.listen(Global.ADDR, Global.PORT);
+		SteamListenSocket server = SteamNetworkingSockets.SERVER_INSTANCE.listen(Global.ADDR2, Global.PORT);
 		while(true) {
 			SteamConnection client = server.accept(false); // We only need to accept one client at a time anyways
 			if(client != null) {

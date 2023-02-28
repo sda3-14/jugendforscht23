@@ -5,15 +5,25 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 public class Global {
-	public static final Inet4Address ADDR;
+	public static final Inet4Address ADDR1;
 	static {
 		Inet4Address a = null;
 		try {
-			a = (Inet4Address) InetAddress.getByName("192.168.178.178");
+			a = (Inet4Address) InetAddress.getByName("172.16.99.1");
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-		ADDR = a;
+		ADDR1 = a;
+	}
+	public static final Inet4Address ADDR2;
+	static {
+		Inet4Address a = null;
+		try {
+			a = (Inet4Address) InetAddress.getByName("172.16.99.2");
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
+		ADDR2 = a;
 	}
 	public static final short PORT = 9999;
 }

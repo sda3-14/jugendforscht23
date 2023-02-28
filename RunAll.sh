@@ -15,16 +15,10 @@ echo $(python avg.py) >> "$1 $2.res"
 ./RunTestSingle.sh $1 5% $2
 echo $(python avg.py) >> "$1 $2.res"
 
-#echo $(python avg.py) >> "$1.res"
-#./RunTestSingle.sh $1 12.5% $2
-#
-#echo $(python avg.py) >> "$1.res"
-#./RunTestSingle.sh $1 15% $2
-#
-#echo $(python avg.py) >> "$1.res"
-#./RunTestSingle.sh $1 17.5% $2
-#
-#echo $(python avg.py) >> "$1.res"
-#./RunTestSingle.sh $1 20% $2
-#
-#echo $(python avg.py) >> "$1.res"
+for loss in $(seq 0 0.5 4)
+do
+	for rate in $(seq 250 250 1000)
+	do
+		./RunTestSingle.sh $1 ${loss} ${rate}
+	done
+done

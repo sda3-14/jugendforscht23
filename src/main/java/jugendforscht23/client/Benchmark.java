@@ -36,7 +36,7 @@ public class Benchmark {
 									b.writeLong(t);
 									ctx.writeAndFlush(b);
 									lock.unlock();
-									Thread.sleep(10);
+									Thread.sleep(5);
 								}
 							} catch (InterruptedException e) {
 								e.printStackTrace();

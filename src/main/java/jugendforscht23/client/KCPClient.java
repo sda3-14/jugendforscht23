@@ -22,7 +22,7 @@ public class KCPClient {
 				}
 			});
 		bootstrap = ChannelOptionHelper.nodelay(bootstrap, true, 20, 2, true);
-		Channel ch = bootstrap.connect(Global.ADDR, Global.PORT).syncUninterruptibly().channel();
+		Channel ch = bootstrap.connect(Global.ADDR1, Global.PORT).syncUninterruptibly().channel();
 		ch.closeFuture().syncUninterruptibly();
 		worker.shutdownGracefully();
 	}

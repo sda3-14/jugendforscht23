@@ -18,7 +18,7 @@ public class TCPClient {
 					Benchmark.init(ch.pipeline());
 				}
 			});
-		NioSocketChannel ch = (NioSocketChannel) bootstrap.connect(Global.ADDR, Global.PORT).syncUninterruptibly().channel();
+		NioSocketChannel ch = (NioSocketChannel) bootstrap.connect(Global.ADDR1, Global.PORT).syncUninterruptibly().channel();
 		ch.closeFuture().syncUninterruptibly();
 		worker.shutdownGracefully();
 	}

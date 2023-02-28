@@ -50,7 +50,7 @@ public class SteamConnection {
 	}
 
 	public void send(byte[] data, boolean reliable) {
-		EResult result = EResult.find(GameNetworkingSockets.INSTANCE.SteamAPI_ISteamNetworkingSockets_SendMessageToConnection(parent.instance, handle, data, data.length, reliable?8:0));
+		EResult result = EResult.find(GameNetworkingSockets.INSTANCE.SteamAPI_ISteamNetworkingSockets_SendMessageToConnection(parent.instance, handle, data, data.length, reliable?9:0));
 		if(result != EResult.OK) throw new Error("Could not send message: " + result);
 	}
 	public void flush() {

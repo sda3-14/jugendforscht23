@@ -19,7 +19,7 @@ public class TCPServer {
 					PingHandler.init(ch.pipeline());
 				}
 			});
-		NioServerSocketChannel ch = (NioServerSocketChannel) bootstrap.bind(Global.ADDR, Global.PORT).syncUninterruptibly().channel();
+		NioServerSocketChannel ch = (NioServerSocketChannel) bootstrap.bind(Global.ADDR2, Global.PORT).syncUninterruptibly().channel();
 		ch.closeFuture().syncUninterruptibly();
 		worker.shutdownGracefully();
 	}

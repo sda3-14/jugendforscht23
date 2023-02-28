@@ -34,10 +34,10 @@ public class UnetServer {
 				}
 			};
 		});
-		driver.bind(new InetSocketAddress(Global.ADDR, Global.PORT));
+		driver.bind(new InetSocketAddress(Global.ADDR2, Global.PORT));
 		while(true) {
 			driver.tick();
-			Thread.sleep(1);
+			Thread.sleep(5);
 		}
 	}
 }

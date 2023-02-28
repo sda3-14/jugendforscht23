@@ -14,7 +14,7 @@ import jugendforscht23.Global;
 
 public class SteamP2PClient {
 	public static void main(String[] args) throws InterruptedException {
-		SteamConnection client = SteamNetworkingSockets.INSTANCE.connect(Global.ADDR, Global.PORT);
+		SteamConnection client = SteamNetworkingSockets.INSTANCE.connect(Global.ADDR1, Global.PORT);
 		while(client.getState() == ConnectionState.Connecting) Thread.sleep(1);
 		assert client.getState() == ConnectionState.Connected;
 		EmbeddedChannel ch = new EmbeddedChannel();

@@ -26,7 +26,7 @@ public class UnetClient {
 				}
 			};
 		});
-		NetConnection conn = driver.connect(new InetSocketAddress(Global.ADDR, Global.PORT));
+		NetConnection conn = driver.connect(new InetSocketAddress(Global.ADDR1, Global.PORT));
 		NetChannel ch = new NetChannel(conn, NetChType.CONTROL);
 		ch.pipeline().addLast(new MessageToMessageCodec<NetMsg, ByteBuf>() {
 			protected void encode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
@@ -45,7 +45,7 @@ public class UnetClient {
 			lock.lock();
 			driver.tick();
 			lock.unlock();
-			Thread.sleep(1);
+			Thread.sleep(5);
 		}
 	}
 }
