@@ -1,4 +1,4 @@
-# Jugendforscht 2023 von V. Westpfahl und J. Frodermann
+# Jugendforscht 2023 von V. Westphal und J. Frodermann
 
 ## Explanations
 
