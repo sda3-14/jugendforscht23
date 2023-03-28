@@ -1,23 +1,31 @@
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Menu;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import java.util.stream.IntStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 public class VisMain {
 	private static final int PACKET_COUNT = 20;
@@ -26,13 +34,17 @@ public class VisMain {
 	private static final boolean[] DROP_ACK = new boolean[PACKET_COUNT];
 	private static final String u1 = "Server";
 	private static final String u2 = "Client";
+	private static int index  = 0;
 
 	private static JFrame frame1;
 	private static JFrame frame2;
 	private static Canvas canvas;
 	private static JTable tbl;
+	private static AbstractTableModel model;
 
-	private static int sim_dist = 10;
+	private static boolean playing = false;
+	private static int sim_dist = 0;
+	private static double sim_step = 0;
 	private static NetStrategy currentStrat = new UnaAckStrat();
 
 	private static final LoadingCache<String, BufferedImage> img = CacheBuilder.newBuilder()
@@ -60,7 +72,7 @@ public class VisMain {
 		frame2.setTitle("Jugendforscht 2023");
 		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		tbl = new JTable(new AbstractTableModel() {
+		model = new AbstractTableModel() {
 			public int getColumnCount() {
 				return 3+SIMULATION_STEPS;
 			}
@@ -101,12 +113,13 @@ public class VisMain {
 			}
 
 			public Class<?> getColumnClass(int col) {
-        return col == 1 || col == 2 ? Boolean.class : String.class;
-    	}
+				return col == 1 || col == 2 ? Boolean.class : String.class;
+			}
 			public boolean isCellEditable(int row, int col) {
 				return col == 1 || col == 2;
 			}
-		});
+		};
+		tbl = new JTable(model);
 		tbl.setRowSelectionAllowed(false);
 		tbl.setColumnSelectionAllowed(false);
 		tbl.setCellSelectionEnabled(true);
@@ -116,8 +129,42 @@ public class VisMain {
 		tbl.getColumnModel().getColumn(1).setMaxWidth(16);
 		tbl.getColumnModel().getColumn(2).setMinWidth(16);
 		tbl.getColumnModel().getColumn(2).setMaxWidth(16);
+		canvas.addKeyListener(new KeyListener() {
+			public void keyPressed(KeyEvent e) {
+				System.out.println(e);
+				
+				switch (e.getKeyCode()) {
+					case KeyEvent.VK_1:
+						currentStrat = new AckStrat();
+						break;
+					case KeyEvent.VK_2:
+						currentStrat = new UnaStrat();
+						break;
+					case KeyEvent.VK_3:
+						currentStrat = new UnaAckStrat();
+						break;
+					case KeyEvent.VK_4:
+						currentStrat = new BoundaryStrat();
+						break;
+					case KeyEvent.VK_RIGHT:
+						sim_dist ++;
+						sim_step = 0;
+						break;
+					case KeyEvent.VK_LEFT:
+						sim_dist --;
+						sim_step = 99999;
+						break;
+					case KeyEvent.VK_ENTER:
+						sim_step = 0;
+				}
+
+				model.fireTableDataChanged();
+			}
+			public void keyReleased(KeyEvent e) {}
+			public void keyTyped(KeyEvent e) {}
+		});
 		JScrollPane scroll = new JScrollPane(tbl);
-		scroll.setPreferredSize(new Dimension(400, 300));
+		scroll.setPreferredSize(new Dimension(1000, 350));
 		frame2.add(scroll);
 		frame2.pack();
 
@@ -126,7 +173,7 @@ public class VisMain {
 
 		while(true) {
 			render();
-			Thread.sleep(10);
+			Thread.sleep(1000/60);
 		}
 	}
 
@@ -145,8 +192,37 @@ public class VisMain {
 	}
 
 	public static void draw(Graphics2D g) throws ExecutionException {
+		// kekse sind lecker
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, 800, 600);
+
+		List<Map.Entry<?, ?>> packets = new ArrayList<Map.Entry<?, ?>>();
+		if(sim_dist % 4 == 2) {
+			packets = Arrays.asList(IntStream.range(0, PACKET_COUNT).filter(a->doSend(sim_dist/4, a)).mapToObj(a->Map.entry(pktName(a), gotDataPacket(sim_dist/4, a))).toArray(Map.Entry<?,?>[]::new));
+		}
+		if(sim_dist % 4 == 0 && sim_dist > 0) {
+			packets = Arrays.asList(IntStream.range(0, PACKET_COUNT).filter(a->currentStrat.ackFor(sim_dist/4-1, a)).mapToObj(a->Map.entry(currentStrat.ackName(sim_dist/4-1, a), gotAck(sim_dist/4-1, a))).toArray(Map.Entry<?,?>[]::new));
+		}
+		System.out.println(sim_dist);
+		g.setColor(Color.black);
+		for (int i = 0; i < packets.size(); i++) {
+			Map.Entry<?,?> e = packets.get(i);
+			double pkt_stp = sim_step*0.6 - (double)i/8;
+			if (pkt_stp < 1 && pkt_stp > 0) {
+				if (pkt_stp > .5 && !(Boolean) e.getValue()) {
+					g.drawImage(img.get("packet.png"), sim_dist % 4 == 2 ? 305 : 320, (int)(80+Math.pow((pkt_stp)*18,2)),50,50, null);
+					g.drawString((String) e.getKey(), sim_dist % 4 == 2 ? 305 : 320, (int)(80+Math.pow((pkt_stp)*18,2)));
+				} else {
+					g.drawImage(img.get("packet.png"), sim_dist % 4 == 2 ? (int)(110+(pkt_stp)*410) :  (int)(500-(pkt_stp)*410), (int)(80+(Math.pow((pkt_stp)*40-20,2)*.5)),50,50, null);
+					g.drawString((String) e.getKey(),sim_dist % 4 == 2 ? (int)(110+(pkt_stp)*410) :  (int)(500-(pkt_stp)*410), (int)(80+(Math.pow((pkt_stp)*40-20,2)*.5)));
+				}
+			}
+		}
+
 		g.drawImage(img.get("pc.png"), 100, 250, 100, 100, null);
 		g.drawImage(img.get("laptop.png"), 500, 250, 100, 100, null);
+
+		sim_step += .015;
 	}
 
 	public static interface NetStrategy {
